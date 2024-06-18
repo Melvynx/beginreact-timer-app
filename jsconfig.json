@@ -2,6 +2,12 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    "checkJs": true, // Activez la vérification des types dans les fichiers JS
+    "noEmit": true, // N'émettez pas de fichiers de sortie
+    "strict": false, // Désactivez le mode strict pour réduire les erreurs de type
+    "esModuleInterop": true, // Permet une meilleure interopérabilité des modules ES6 avec CommonJS et UMD
+    "jsx": "react-jsx", // Activez le support JSX pour React
+    "allowSyntheticDefaultImports": true // Permettez les imports par défau
   }
 }

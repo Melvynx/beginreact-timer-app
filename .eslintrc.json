@@ -1,3 +1,21 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": [
+    "next/core-web-vitals",
+    "eslint:recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:react/recommended",
+    "plugin:tailwindcss/recommended"
+  ],
+  "rules": {
+    "react/no-unescaped-entities": 0,
+    "react/prop-types": 0,
+    "react/react-in-jsx-scope": 0,
+    "@next/next/no-img-element": 0
+  },
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "parser": "@typescript-eslint/parser"
+    }
+  ]
 }
