@@ -18,7 +18,7 @@ const formatTimeValue = (value, maxValue) => {
 
 export const AddTimerForm = () => {
   const addTimer = useTimerStore((state) => state.addTimer);
-  const [time, setTime] = useState({ hrs: "00", mins: "00", secs: "00" });
+  const [time, setTime] = useState({ hrs: "00", mins: "01", secs: "00" });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
