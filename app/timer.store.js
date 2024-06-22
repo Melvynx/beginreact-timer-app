@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { getDurationText } from "./Timer";
+import { useEffect } from "react";
 
 /**
  * @typedef {Object} Timer
@@ -22,6 +24,7 @@ export const useTimerStore = create(
               id,
               duration,
               timeLeft: duration,
+              endAt: Date.now() + duration,
               isRunning: true,
             },
           ],
@@ -38,10 +41,19 @@ export const useTimerStore = create(
             if (timer.id !== id) return timer;
 
             if (!timer.isRunning && timer.timeLeft === 0) {
-              return { ...timer, isRunning: true, timeLeft: timer.duration };
+              return {
+                ...timer,
+                isRunning: true,
+                endAt: Date.now() + timer.duration,
+                timeLeft: timer.duration,
+              };
             }
 
-            return { ...timer, isRunning: !timer.isRunning };
+            return {
+              ...timer,
+              isRunning: !timer.isRunning,
+              endAt: Date.now() + timer.timeLeft,
+            };
           }),
         }));
       },
@@ -52,27 +64,40 @@ export const useTimerStore = create(
   )
 );
 
-setInterval(() => {
-  useTimerStore.setState((state) => ({
-    timers: state.timers.map((timer) => {
-      if (!timer.isRunning) {
-        return timer;
-      }
+export const useTimerInterval = () => {
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      useTimerStore.setState((state) => ({
+        timers: state.timers.map((timer) => {
+          if (!timer.isRunning) {
+            return timer;
+          }
 
-      if (timer.timeLeft <= 0) {
-        state.removeTimer(timer.id);
-        const audio = new Audio("/ring.mp3");
-        audio.play();
-        return {
-          ...timer,
-          timeLeft: 0,
-          isRunning: false,
-        };
-      }
-      return {
-        ...timer,
-        timeLeft: timer.timeLeft - 1000,
-      };
-    }),
-  }));
-}, 1000);
+          if (timer.timeLeft <= 0) {
+            state.removeTimer(timer.id);
+            const audio = new Audio("/ring.mp3");
+            audio.play();
+            const durationText = getDurationText(timer.duration);
+            new Notification("Timer finish", {
+              body: `Hey, your timer of ${durationText} is finished`,
+              icon: "/bell.png",
+            });
+
+            return {
+              ...timer,
+              timeLeft: 0,
+              isRunning: false,
+            };
+          }
+
+          return {
+            ...timer,
+            timeLeft: Math.round(timer.endAt - Date.now()) ?? 0,
+          };
+        }),
+      }));
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+};

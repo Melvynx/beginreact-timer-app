@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 export const CircularProgress = ({
   width,
   timeLeft,
@@ -25,7 +27,7 @@ export const CircularProgress = ({
         cx={width / 2}
         cy={width / 2}
       />
-      <circle
+      <motion.circle
         className="text-primary"
         stroke="currentColor"
         strokeWidth="4"
@@ -34,7 +36,8 @@ export const CircularProgress = ({
         cx={width / 2}
         cy={width / 2}
         strokeDasharray={circumference}
-        strokeDashoffset={strokeDashoffset}
+        animate={{ strokeDashoffset }}
+        transition={{ duration: 1 }}
         strokeLinecap="round"
       />
     </svg>

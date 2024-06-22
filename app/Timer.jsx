@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { motion } from "framer-motion";
 import { Bell, Pause, Play, RotateCcw, X } from "lucide-react";
 import { CircularProgress } from "./CircularProgress";
 import { useTimerStore } from "./timer.store";
@@ -8,25 +9,33 @@ export const Timer = ({ id: propsId }) => {
 
   if (!timer) return null;
 
-  const { id, duration, timeLeft, isRunning } = timer;
-
-  const finishDate = new Date(Date.now() + duration);
+  const { id, duration, timeLeft, isRunning, endAt } = timer;
 
   const timeText = getTimeText(timeLeft);
   const durationText = getDurationText(duration);
 
   return (
-    <div className="relative flex flex-col gap-2 rounded-md bg-base-200 p-4">
-      <div className="relative flex size-48 flex-col items-center justify-center gap-1">
+    <motion.div
+      className={clsx(
+        "relative flex size-[224px] flex-col gap-2 rounded-2xl bg-base-200 p-4",
+        {
+          "brightness-75": timeLeft === 0,
+        }
+      )}
+      animate={timeLeft === 0 ? { y: [0, 5, 0, 5, 0] } : {}}
+      transition={
+        timeLeft === 0 ? { duration: 0.5, repeat: 3, repeatType: "loop" } : {}
+      }
+    >
+      <div className="relative flex size-full flex-col items-center justify-center gap-1">
         <CircularProgress
           className="absolute"
-          style={{ transform: "rotate(-90deg)" }}
           timeLeft={timeLeft}
           duration={duration}
           width={198}
           radiusRatio={0.9}
         ></CircularProgress>
-        <TimerHeader finishDate={finishDate} />
+        <TimerHeader finishDate={new Date(endAt)} />
         <TimerDisplay
           timeText={timeText}
           timeLeftFormatted={formatTimeList(timeLeft)}
@@ -34,14 +43,17 @@ export const Timer = ({ id: propsId }) => {
         <DurationDisplay durationText={durationText} />
       </div>
       <TimerControls id={id} isRunning={isRunning} timeLeft={timeLeft} />
-    </div>
+    </motion.div>
   );
 };
 
 const TimerHeader = ({ finishDate }) => (
   <div className="flex items-center justify-between gap-2">
     <Bell size={16} className="text-neutral-content" />
-    <p>{`${finishDate.getHours()}:${finishDate.getMinutes()}`}</p>
+    <p>{`${finishDate.getHours()}:${finishDate
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")}`}</p>
   </div>
 );
 
@@ -111,7 +123,7 @@ const getTimeText = (timeLeft) => {
   return timeText;
 };
 
-const getDurationText = (duration) => {
+export const getDurationText = (duration) => {
   const durationFormatted = formatTimeList(duration);
   const durationWithPadTime = padTime(durationFormatted);
   let durationText = `${durationWithPadTime.secs} secs`;

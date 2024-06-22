@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "clsx": "^2.1.1",
+    "framer-motion": "^11.2.11",
     "lucide-react": "^0.395.0",
     "next": "14.2.4",
     "react": "^18",
@@ -17,13 +18,15 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "@types/node": "20.14.7",
+    "@types/react": "18.3.3",
     "daisyui": "^4.12.2",
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
     "eslint-plugin-react": "^7.34.2",
     "eslint-plugin-react-hooks": "^4.6.2",
-    "eslint-plugin-tailwindcss": "^3.17.0"
+    "eslint-plugin-tailwindcss": "^3.17.0",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1"
   }
 }
